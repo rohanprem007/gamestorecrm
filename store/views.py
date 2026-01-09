@@ -1,70 +1,84 @@
-from django.shortcuts import render
-from .models import Product
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.db import transaction
+from django.db.models import Sum
 from .models import Product, Customer, Sale
 
+def home(request):
+    """
+    Renders the high-energy landing page.
+    """
+    return render(request, 'store/home.html')
 
-from django.shortcuts import render
-from .models import Product, Customer, Sale
-
-# 1. Dashboard (Already created, but ensure it's here)
 def dashboard(request):
+    """
+    The main Command Center view.
+    """
     products = Product.objects.all()
-    return render(request, 'store/dashboard.html', {'products': products})
+    recent_sales = Sale.objects.order_by('-sale_date')[:5]
+    
+    # Calculate Total Revenue
+    total_revenue = Sale.objects.aggregate(Sum('amount_paid'))['amount_paid__sum'] or 0
+    
+    # Stats Counts
+    sales_count = Sale.objects.count()
+    customers_count = Customer.objects.count()
+    
+    # Logic for Leaderboard (Top Customers by XP)
+    top_customers = Customer.objects.order_by('-loyalty_points')[:5]
 
-# 2. Inventory Page
+    context = {
+        'products': products,
+        'recent_sales': recent_sales,
+        'total_revenue': total_revenue,
+        'sales_count': sales_count,
+        'customers_count': customers_count,
+        'top_customers': top_customers,
+    }
+    return render(request, 'store/dashboard.html', context)
+
 def inventory_list(request):
     products = Product.objects.all()
     return render(request, 'store/inventory.html', {'products': products})
 
-# 3. Customers Page
 def customer_list(request):
     customers = Customer.objects.all()
     return render(request, 'store/customers.html', {'customers': customers})
 
-# 4. Sales History Page
-def sales_list(request):
-    sales = Sale.objects.all().order_by('-sale_date')
-    return render(request, 'store/sales.html', {'sales': sales})
-
-
-
 def process_sale(request, product_id):
-    # Fetch the product being sold
     product = get_object_or_404(Product, id=product_id)
     
-    # Fetch the customer (assuming the logged-in user is the customer for this demo)
-    # In a staff-facing CRM, you'd select a customer ID from a form instead.
-    customer = get_object_or_404(Customer, user=request.user)
+    # For demo, if user is superuser or logged in, use them. 
+    # If not, use/create a default 'Guest' or 'StoreAdmin' customer profile.
+    if hasattr(request.user, 'customer'):
+        customer = request.user.customer
+    else:
+        # Fallback for testing if admin doesn't have a linked customer profile
+        customer, created = Customer.objects.get_or_create(
+            phone="000-000-0000",
+            defaults={'user': request.user, 'gamer_tag': 'AdminUser'}
+        )
 
-    # Validation: Is there stock?
     if product.stock_count > 0:
         try:
-            # Atomic block ensures all 3 updates succeed or all 3 fail
             with transaction.atomic():
-                # Step 1: Create the Sale Record
                 Sale.objects.create(
                     customer=customer,
                     product=product,
                     amount_paid=product.price
                 )
-
-                # Step 2: Decrease Stock
                 product.stock_count -= 1
                 product.save()
-
-                # Step 3: Add Loyalty Points (e.g., 1 point per $1 spent)
-                points_earned = int(product.price)
-                customer.loyalty_points += points_earned
+                
+                # Award XP (1 point per dollar)
+                points = int(product.price)
+                customer.loyalty_points += points
                 customer.save()
 
-                messages.success(request, f"Sale Completed! {product.title} sold to {customer.gamer_tag}. {points_earned} XP awarded!")
-        
+                messages.success(request, f"SOLD: {product.title}! +{points} XP to {customer.gamer_tag}")
         except Exception as e:
-            messages.error(request, "Transaction failed. Database has been rolled back.")
+            messages.error(request, "Transaction Failed. System Rolled Back.")
     else:
-        messages.error(request, f"Error: {product.title} is currently out of stock.")
+        messages.error(request, f"OUT OF STOCK: {product.title}")
 
     return redirect('dashboard')

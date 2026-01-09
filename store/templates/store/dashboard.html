@@ -1,77 +1,228 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container-fluid pt-4">
-    
-    {% if messages %}
-        {% for message in messages %}
-            <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} alert-dismissible fade show shadow-sm" role="alert">
-                <i class="fas {% if message.tags == 'error' %}fa-exclamation-circle{% else %}fa-check-circle{% endif %} me-2"></i>
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        {% endfor %}
-    {% endif %}
+<!-- Compact Header Section -->
+<div class="row mb-3">
+    <div class="col-12 d-flex justify-content-between align-items-end">
+        <div>
+            <!-- Changed to vibrant Cyan and increased weight -->
+            <h4 class="fade-in mb-0" style="color: #00f2ff; letter-spacing: -1px; font-weight: 900; text-shadow: 0 0 5px rgba(0, 242, 255, 0.3);">
+                COMMAND <span class="text-white">CENTER</span>
+            </h4>
+            <p class="text-light fade-in small mb-0" style="font-size: 0.75rem; font-family: monospace; font-weight: 600;">SYSTEM.ONLINE // TRACKING_MODULES_ACTIVE</p>
+        </div>
+        <div class="fade-in">
+            <span class="badge rounded-pill" style="background: rgba(0, 242, 255, 0.15); color: #00f2ff; border: 1px solid #00f2ff; box-shadow: 0 0 10px rgba(0, 242, 255, 0.2); font-weight: 700;">v2.0 LIVE</span>
+        </div>
+    </div>
+</div>
 
-    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
-        <h1 class="h2"><i class="fas fa-gamepad text-primary"></i> Game Store Dashboard</h1>
-        <div class="btn-toolbar mb-2 mb-md-0">
-            <a href="/admin/store/product/add/" class="btn btn-sm btn-outline-secondary">
-                <i class="fas fa-plus"></i> Add New Product
+<!-- Centered HUD Navigation Bar -->
+<div class="row mb-3 fade-in justify-content-center">
+    <div class="col-md-10 col-lg-8">
+        <div class="glass-card p-2 rounded-pill d-flex justify-content-center align-items-center gap-2 shadow-lg" style="background: rgba(15, 15, 25, 0.8); border: 1px solid rgba(255, 255, 255, 0.15);">
+            <a href="#stats-module" class="btn btn-sm btn-neon border-0 rounded-pill px-3 fw-bold" style="font-size: 0.7rem; color: #fff;">
+                <i class="fas fa-chart-line text-info me-1"></i> Analytics
+            </a>
+            <div style="width: 1px; height: 15px; background: rgba(255, 255, 255, 0.3);"></div>
+            <a href="#inventory-module" class="btn btn-sm btn-neon border-0 rounded-pill px-3 fw-bold" style="font-size: 0.7rem; color: #fff;">
+                <i class="fas fa-box text-primary me-1"></i> Inventory
+            </a>
+            <div style="width: 1px; height: 15px; background: rgba(255, 255, 255, 0.3);"></div>
+            <a href="#sales-module" class="btn btn-sm btn-neon border-0 rounded-pill px-3 fw-bold" style="font-size: 0.7rem; color: #fff;">
+                <i class="fas fa-receipt text-success me-1"></i> Sales
+            </a>
+            <div style="width: 1px; height: 15px; background: rgba(255, 255, 255, 0.3);"></div>
+            <a href="#crm-module" class="btn btn-sm btn-neon border-0 rounded-pill px-3 fw-bold" style="font-size: 0.7rem; color: #fff;">
+                <i class="fas fa-users text-warning me-1"></i> CRM
+            </a>
+            <div style="width: 1px; height: 15px; background: rgba(255, 255, 255, 0.3);"></div>
+            <a href="/admin" class="btn btn-sm btn-neon border-0 rounded-pill px-3 fw-bold" style="font-size: 0.7rem; color: #fff;">
+                <i class="fas fa-shield-alt text-danger me-1"></i> Root
             </a>
         </div>
     </div>
+</div>
 
-    <div class="card shadow-sm border-0">
-        <div class="card-header bg-white py-3">
-            <h5 class="mb-0 text-dark fw-bold">Active Inventory</h5>
+<!-- Snatched Stats Row (KPIs) -->
+<div id="stats-module" class="row mb-3 fade-in g-2 justify-content-center">
+    <div class="col-4 col-md-2">
+        <div class="glass-card text-center p-2 position-relative overflow-hidden" style="border-bottom: 3px solid #00f2ff; background: rgba(0,0,0,0.3);">
+            <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to bottom, rgba(0, 242, 255, 0.1), transparent);"></div>
+            <i class="fas fa-database mb-1 text-info" style="font-size: 1.1rem; filter: drop-shadow(0 0 5px #00f2ff);"></i>
+            <div class="text-white-50" style="font-size: 0.6rem; text-transform: uppercase; font-weight: 900; letter-spacing: 1px;">Titles</div>
+            <!-- Changed to Pure White and Bold -->
+            <div class="h5 fw-black mb-0" style="color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); font-weight: 800;">{{ products.count }}</div>
         </div>
-        <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
-                <thead class="table-dark">
-                    <tr>
-                        <th class="ps-4">Game Detail</th>
-                        <th>Platform</th>
-                        <th>Price</th>
-                        <th>Stock Level</th>
-                        <th class="text-center">Action</th>
-                    </tr>
-                </thead>
+    </div>
+    <div class="col-4 col-md-2">
+        <div class="glass-card text-center p-2 position-relative overflow-hidden" style="border-bottom: 3px solid #bc13fe; background: rgba(0,0,0,0.3);">
+            <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to bottom, rgba(188, 19, 254, 0.1), transparent);"></div>
+            <i class="fas fa-shopping-cart mb-1" style="font-size: 1.1rem; color: #bc13fe; filter: drop-shadow(0 0 5px #bc13fe);"></i>
+            <div class="text-white-50" style="font-size: 0.6rem; text-transform: uppercase; font-weight: 900; letter-spacing: 1px;">Revenue</div>
+            <!-- Changed to Pure White and Bold -->
+            <div class="h5 fw-black mb-0" style="color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); font-weight: 800;">${{ total_revenue|default:"0" }}</div>
+        </div>
+    </div>
+    <div class="col-4 col-md-2">
+        <div class="glass-card text-center p-2 position-relative overflow-hidden" style="border-bottom: 3px solid #ff00ff; background: rgba(0,0,0,0.3);">
+            <div class="position-absolute top-0 start-0 w-100 h-100" style="background: linear-gradient(to bottom, rgba(255, 0, 255, 0.1), transparent);"></div>
+            <i class="fas fa-users mb-1" style="font-size: 1.1rem; color: #ff00ff; filter: drop-shadow(0 0 5px #ff00ff);"></i>
+            <div class="text-white-50" style="font-size: 0.6rem; text-transform: uppercase; font-weight: 900; letter-spacing: 1px;">Active XP</div>
+            <!-- Changed to Pure White and Bold -->
+            <div class="h5 fw-black mb-0" style="color: #ffffff; text-shadow: 0 2px 4px rgba(0,0,0,0.8); font-weight: 800;">{{ customers_count|default:"0" }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Module Grid -->
+<div class="row g-3 fade-in h-100">
+    
+    <!-- MODULE 1: INVENTORY MANAGEMENT (Left Side) -->
+    <div id="inventory-module" class="col-lg-8 d-flex flex-column">
+        <div class="glass-card p-0 overflow-hidden shadow-lg flex-fill">
+            <div class="px-3 py-2 d-flex justify-content-between align-items-center" style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.4);">
+                <div class="d-flex align-items-center">
+                    <div class="rounded-circle bg-dark d-flex align-items-center justify-content-center me-2" style="width: 24px; height: 24px; box-shadow: 0 0 10px #ff00ff; border: 1px solid #ff00ff;">
+                        <i class="fas fa-fire-alt" style="font-size: 0.7rem; color: #ff00ff;"></i>
+                    </div>
+                    <!-- Changed to White -->
+                    <h6 class="mb-0 small fw-bold" style="color: #ffffff; letter-spacing: 1px;">INVENTORY LIBRARY</h6>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="/admin/store/product/add/" class="btn-neon py-1 px-3 text-decoration-none rounded-pill fw-bold" style="font-size: 0.65rem; border: 1px solid #00f2ff; color: #00f2ff;">
+                        <i class="fas fa-plus me-1"></i> ADD NEW
+                    </a>
+                </div>
+            </div>
+            
+            <div class="table-responsive h-100">
+                <table class="table table-dark table-hover mb-0 align-middle" style="background: transparent; font-size: 0.8rem;">
+                    <thead style="background: rgba(0,0,0,0.5);">
+                        <tr class="text-white-50 small text-uppercase" style="font-size: 0.65rem; letter-spacing: 1px; font-weight: 700;">
+                            <th class="ps-4 py-3 border-0">Item</th>
+                            <th class="border-0">Rig</th>
+                            <th class="border-0">Value</th>
+                            <th class="border-0">Stock</th>
+                            <th class="text-center border-0">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                        <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                            <td class="ps-4 py-2">
+                                <!-- Changed to White and Bold -->
+                                <div class="fw-bold" style="color: #ffffff; font-size: 0.85rem;">{{ product.title }}</div>
+                                <div style="font-size: 0.65rem; color: #adb5bd;">{{ product.category.name }}</div>
+                            </td>
+                            <td>
+                                <span class="badge" style="background: rgba(0, 242, 255, 0.1); color: #00f2ff; border: 1px solid rgba(0, 242, 255, 0.4); font-size: 0.6rem; padding: 3px 8px; border-radius: 4px; font-weight: 600;">
+                                    {{ product.get_platform_display }}
+                                </span>
+                            </td>
+                            <!-- Changed to White -->
+                            <td class="fw-bold" style="color: #ffffff; font-family: monospace; font-size: 0.85rem;">${{ product.price }}</td>
+                            <td>
+                                {% if product.stock_count > 0 %}
+                                    <div class="progress mb-1 bg-dark" style="height: 5px; width: 60px; border-radius: 3px;">
+                                        <div class="progress-bar" role="progressbar" 
+                                             style="width: {{ product.stock_count }}0%; background: linear-gradient(90deg, #00f2ff, #bc13fe); border-radius: 3px; box-shadow: 0 0 8px #00f2ff;">
+                                        </div>
+                                    </div>
+                                    <div style="font-size: 0.6rem; font-weight: 800; color: #00f2ff;">{{ product.stock_count }} LFT</div>
+                                {% else %}
+                                    <span class="badge bg-danger text-white p-1" style="font-size: 0.6rem; box-shadow: 0 0 8px red; font-weight: 700;">WIPED</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-center">
+                                {% if product.stock_count > 0 %}
+                                    <a href="{% url 'process_sale' product.id %}" class="btn-neon py-1 px-3 text-decoration-none d-inline-block rounded-pill fw-bold" style="font-size: 0.65rem; border: 1px solid #bc13fe; color: #bc13fe; background: rgba(188, 19, 254, 0.05);">
+                                        <i class="fas fa-zap"></i>
+                                    </a>
+                                {% else %}
+                                    <span class="text-muted opacity-25" style="font-size: 0.8rem;"><i class="fas fa-lock"></i></span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-center py-5 small text-muted">Loot box is empty.</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: New Modules Stacked -->
+    <div class="col-lg-4 d-flex flex-column gap-3">
+        
+        <!-- MODULE 2: SALES & BILLING (Recent Activity) -->
+        <div id="sales-module" class="glass-card p-0 overflow-hidden shadow-lg flex-fill">
+            <div class="px-3 py-2 d-flex justify-content-between align-items-center" style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.4);">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-receipt me-2" style="font-size: 0.9rem; color: #00f2ff;"></i>
+                    <!-- Changed to White -->
+                    <h6 class="mb-0 small fw-bold" style="color: #ffffff; letter-spacing: 1px;">RECENT DROPS</h6>
+                </div>
+            </div>
+            <div class="list-group list-group-flush">
+                {% for sale in recent_sales|slice:":3" %}
+                <!-- Changed to White -->
+                <div class="list-group-item bg-transparent border-bottom border-secondary d-flex justify-content-between align-items-center py-2 px-3" style="color: #ffffff;">
+                    <div class="d-flex align-items-center">
+                        <div class="rounded-circle bg-dark me-2 d-flex justify-content-center align-items-center" style="width: 28px; height: 28px; border: 1px solid rgba(255,255,255,0.1);">
+                            <i class="fas fa-gamepad text-secondary" style="font-size: 0.7rem;"></i>
+                        </div>
+                        <div>
+                            <div style="font-size: 0.75rem; font-weight: bold; line-height: 1.1;">{{ sale.product.title }}</div>
+                            <div style="font-size: 0.6rem; color: #adb5bd; font-family: monospace;">{{ sale.sale_date|date:"H:i" }} // ID:{{ sale.id }}</div>
+                        </div>
+                    </div>
+                    <span class="fw-bold" style="font-size: 0.75rem; color: #00f2ff; text-shadow: 0 0 8px rgba(0, 242, 255, 0.4);">+${{ sale.amount_paid }}</span>
+                </div>
+                {% empty %}
+                <div class="p-4 text-center text-muted small" style="font-size: 0.75rem;">
+                    <i class="fas fa-wind d-block mb-1 opacity-50"></i>
+                    No transactions recorded.
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- MODULE 3: CRM / GAMERS (Leaderboard) -->
+        <div id="crm-module" class="glass-card p-0 overflow-hidden shadow-lg flex-fill">
+            <div class="px-3 py-2 d-flex justify-content-between align-items-center" style="border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.4);">
+                <div class="d-flex align-items-center">
+                    <i class="fas fa-crown me-2 text-warning" style="font-size: 0.9rem;"></i>
+                    <!-- Changed to White -->
+                    <h6 class="mb-0 small fw-bold" style="color: #ffffff; letter-spacing: 1px;">MVP HALL OF FAME</h6>
+                </div>
+            </div>
+            <table class="table table-dark mb-0" style="background: transparent; font-size: 0.75rem;">
                 <tbody>
-                    {% for product in products %}
-                    <tr>
-                        <td class="ps-4">
-                            <div class="fw-bold">{{ product.title }}</div>
-                            <small class="text-muted">{{ product.category.name }}</small>
+                    {% for customer in top_customers|slice:":3" %}
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.05);">
+                        <td class="ps-3 py-2" style="width: 35px;">
+                            <div class="rounded-circle d-flex align-items-center justify-content-center fw-bold" 
+                                 style="width: 22px; height: 22px; 
+                                 {% if forloop.counter == 1 %}background: #FFD700; color: #000; box-shadow: 0 0 10px #FFD700;{% endif %}
+                                 {% if forloop.counter == 2 %}background: #C0C0C0; color: #000;{% endif %}
+                                 {% if forloop.counter == 3 %}background: #CD7F32; color: #000;{% endif %}
+                                 font-size: 0.65rem;">
+                                {{ forloop.counter }}
+                            </div>
                         </td>
-                        <td>
-                            <span class="badge rounded-pill bg-info text-dark">{{ product.platform }}</span>
+                        <td class="py-2">
+                            <!-- Changed to White -->
+                            <div class="fw-bold" style="color: #ffffff; font-size: 0.8rem;">{{ customer.gamer_tag }}</div>
+                            <div style="font-size: 0.6rem; color: #adb5bd;">Rank {{ forloop.counter }}</div>
                         </td>
-                        <td><strong>${{ product.price }}</strong></td>
-                        <td>
-                            {% if product.stock_count < 5 %}
-                                <span class="badge bg-warning text-dark"><i class="fas fa-exclamation-triangle"></i> {{ product.stock_count }} Left</span>
-                            {% else %}
-                                <span class="badge bg-light text-dark border">{{ product.stock_count }}</span>
-                            {% endif %}
+                        <td class="text-end pe-3 py-2">
+                            <span class="badge rounded-pill" style="background: rgba(188, 19, 254, 0.15); color: #bc13fe; border: 1px solid rgba(188, 19, 254, 0.4); font-weight: 700;">{{ customer.loyalty_points }} XP</span>
                         </td>
-                        <td class="text-center">
-    {% if product.stock_count > 0 %}
-        <a href="{% url 'process_sale' product.id %}" class="btn btn-success btn-sm">
-            <i class="fas fa-shopping-cart"></i> Sell Game
-        </a>
-    {% else %}
-        <button class="btn btn-secondary btn-sm" disabled>Out of Stock</button>
-    {% endif %}
-</td>
                     </tr>
                     {% empty %}
-                    <tr>
-                        <td colspan="5" class="text-center py-5">
-                            <i class="fas fa-ghost fa-3x mb-3 text-muted"></i>
-                            <p class="text-muted">Your inventory is empty. Add games via the Admin panel.</p>
-                        </td>
-                    </tr>
+                    <tr><td colspan="3" class="p-4 text-center text-muted small">No MVPs registered.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>

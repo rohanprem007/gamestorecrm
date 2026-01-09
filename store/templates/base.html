@@ -3,78 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}GameVault CRM{% endblock %}</title>
-    
+    <title>GameVault | The Ultimate CRM</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
     <style>
         :root {
-            --gaming-purple: #6f42c1;
-            --dark-bg: #121212;
+            --neon-purple: #bc13fe;
+            --neon-blue: #00f2ff;
+            --neon-pink: #ff00ff;
+            --deep-space: #0b0e14;
+            --glass: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
         }
-        body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        .navbar { background-color: var(--dark-bg) !important; border-bottom: 3px solid var(--gaming-purple); }
-        .sidebar { background: #1a1a1a; min-height: 100vh; color: white; }
-        .sidebar a { color: #d1d1d1; text-decoration: none; padding: 15px 20px; display: block; transition: 0.3s; }
-        .sidebar a:hover { background: var(--gaming-purple); color: white; padding-left: 30px; }
-        .card { border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 10px; }
-        .btn-primary { background-color: var(--gaming-purple); border: none; }
+
+        body { 
+            background: radial-gradient(circle at top right, #1a1a2e, var(--deep-space));
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar for that Gamer Feel */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--deep-space);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(var(--neon-blue), var(--neon-purple));
+            border-radius: 10px;
+        }
+
+        /* Glassmorphism Sidebar */
+        .sidebar { 
+            background: rgba(15, 15, 25, 0.85);
+            backdrop-filter: blur(15px);
+            border-right: 1px solid var(--glass-border);
+            min-height: 100vh;
+            padding: 30px 0;
+            position: fixed;
+            z-index: 100;
+        }
+
+        .sidebar h5 {
+            background: linear-gradient(45deg, var(--neon-blue), var(--neon-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-weight: 900;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 40px;
+        }
+
+        .sidebar a { 
+            color: #94a3b8;
+            text-decoration: none;
+            padding: 14px 25px;
+            display: flex;
+            align-items: center;
+            border-radius: 0 50px 50px 0;
+            margin: 5px 15px 5px 0;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .sidebar a i {
+            width: 25px;
+            font-size: 1.1rem;
+        }
+
+        .sidebar a:hover, .sidebar a.active { 
+            background: linear-gradient(90deg, rgba(0, 242, 255, 0.15), transparent);
+            color: var(--neon-blue);
+            padding-left: 35px;
+            box-shadow: inset 4px 0 0 var(--neon-blue);
+        }
+
+        .sidebar a.active {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
+        }
+
+        /* Main Content Container */
+        .main-wrapper {
+            margin-left: 16.666667%; /* Offset for col-md-2 */
+            width: 83.333333%;
+        }
+
+        /* Sassy Glass Cards */
+        .glass-card {
+            background: var(--glass);
+            backdrop-filter: blur(8px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px) scale(1.01);
+            border-color: var(--neon-purple);
+            box-shadow: 0 10px 30px rgba(188, 19, 254, 0.15);
+        }
+
+        /* Typography */
+        h1, h2, h3, h4 {
+            font-weight: 800;
+            color: #fff;
+            text-shadow: 0 0 15px rgba(255,255,255,0.1);
+        }
+
+        .text-neon {
+            color: var(--neon-blue);
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        /* Neon Buttons */
+        .btn-neon {
+            background: transparent;
+            border: 2px solid var(--neon-purple);
+            color: var(--neon-purple);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            border-radius: 12px;
+            padding: 10px 25px;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px rgba(188, 19, 254, 0.2);
+        }
+
+        .btn-neon:hover {
+            background: var(--neon-purple);
+            color: #fff;
+            box-shadow: 0 0 25px var(--neon-purple);
+            transform: scale(1.05);
+        }
+
+        /* Table Styling */
+        .table {
+            color: #d1d5db;
+        }
+
+        .table-dark {
+            background-color: transparent !important;
+        }
+
+        .table-hover tbody tr:hover {
+            background: rgba(255, 255, 255, 0.03) !important;
+            color: #fff;
+        }
+
+        /* Animation */
+        .fade-in {
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Alert Styling */
+        .alert {
+            background: rgba(188, 19, 254, 0.1);
+            border: 1px solid var(--neon-purple);
+            color: #fff;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 768px) {
+            .main-wrapper {
+                margin-left: 0;
+                width: 100%;
+            }
+            .sidebar {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
-
-    <nav class="navbar navbar-dark sticky-top flex-md-nowrap p-0 shadow">
-        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
-            <i class="fas fa-gamepad me-2"></i> GameVault CRM
-        </a>
-        <div class="navbar-nav">
-            <div class="nav-item text-nowrap">
-                <a class="nav-link px-3" href="/admin">Admin Panel</a>
-            </div>
-        </div>
-    </nav>
-
-    <div class="container-fluid">
-        <div class="row">
-            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
-                <div class="position-sticky pt-3">
-                    <a href="#"><i class="fas fa-chart-line me-2"></i> Dashboard</a>
-                    <a href="#"><i class="fas fa-box-open me-2"></i> Inventory</a>
-                    <a href="#"><i class="fas fa-users me-2"></i> Customers</a>
-                    <a href="#"><i class="fas fa-shopping-cart me-2"></i> Sales</a>
-                    <a href="#"><i class="fas fa-key me-2"></i> Digital Keys</a>
-                    <hr class="mx-3">
-                    <a href="#"><i class="fas fa-sign-out-alt me-2"></i> Sign out</a>
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <!-- Sidebar -->
+            <nav class="col-md-2 d-none d-md-block sidebar shadow">
+                <div class="text-center px-3">
+                    <h5><i class="fas fa-bolt text-neon"></i> GAMEVAULT</h5>
                 </div>
-            </nav>
-            <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-primary">
-                <div class="container">
-                    <a class="navbar-brand fw-bold" href="{% url 'dashboard' %}">
-                        <i class="fas fa-gamepad text-primary me-2"></i>GAMEVAULT
+                
+                <div class="mt-4">
+                    <a href="{% url 'dashboard' %}" class="{% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                        <i class="fas fa-th-large me-3"></i> Dashboard
                     </a>
-                    
-                    <div class="ms-auto d-flex align-items-center">
-                        {% if user.is_authenticated %}
-                            <span class="text-light me-3 small">Welcome, {{ user.username }}</span>
-                            <a href="/admin/logout/" class="btn btn-outline-light btn-sm">Logout</a>
-                        {% else %}
-                            <a href="/admin/login/" class="btn btn-outline-primary btn-sm me-2">Login</a>
-                            <a href="#" class="btn btn-primary btn-sm">Sign Up</a>
-                        {% endif %}
-                    </div>
+                    <a href="{% url 'inventory' %}" class="{% if request.resolver_match.url_name == 'inventory' %}active{% endif %}">
+                        <i class="fas fa-gamepad me-3"></i> Inventory
+                    </a>
+                    <a href="{% url 'customers' %}" class="{% if request.resolver_match.url_name == 'customers' %}active{% endif %}">
+                        <i class="fas fa-user-astronaut me-3"></i> Gamers
+                    </a>
+                    <hr class="mx-4 opacity-10 my-4">
+                    <a href="/admin">
+                        <i class="fas fa-terminal me-3"></i> Root Access
+                    </a>
                 </div>
             </nav>
 
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div class="pt-3 pb-2 mb-3">
-                    {% block content %}
-                    {% endblock %}
-                </div>
+            <!-- Main Content -->
+            <main class="col-md-10 main-wrapper fade-in p-5">
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-dismissible fade show shadow-lg mb-4" role="alert">
+                            <i class="fas fa-info-circle me-2"></i> {{ message }}
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                {% block content %}{% endblock %}
             </main>
         </div>
     </div>
-
+    
+    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

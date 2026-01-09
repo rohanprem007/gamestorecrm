@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}GameVault CRM{% endblock %}</title>
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --gaming-purple: #6f42c1;
+            --dark-bg: #121212;
+        }
+        body { background-color: #f4f7f6; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .navbar { background-color: var(--dark-bg) !important; border-bottom: 3px solid var(--gaming-purple); }
+        .sidebar { background: #1a1a1a; min-height: 100vh; color: white; }
+        .sidebar a { color: #d1d1d1; text-decoration: none; padding: 15px 20px; display: block; transition: 0.3s; }
+        .sidebar a:hover { background: var(--gaming-purple); color: white; padding-left: 30px; }
+        .card { border: none; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-radius: 10px; }
+        .btn-primary { background-color: var(--gaming-purple); border: none; }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar navbar-dark sticky-top flex-md-nowrap p-0 shadow">
+        <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="#">
+            <i class="fas fa-gamepad me-2"></i> GameVault CRM
+        </a>
+        <div class="navbar-nav">
+            <div class="nav-item text-nowrap">
+                <a class="nav-link px-3" href="/admin">Admin Panel</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid">
+        <div class="row">
+            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <a href="#"><i class="fas fa-chart-line me-2"></i> Dashboard</a>
+                    <a href="#"><i class="fas fa-box-open me-2"></i> Inventory</a>
+                    <a href="#"><i class="fas fa-users me-2"></i> Customers</a>
+                    <a href="#"><i class="fas fa-shopping-cart me-2"></i> Sales</a>
+                    <a href="#"><i class="fas fa-key me-2"></i> Digital Keys</a>
+                    <hr class="mx-3">
+                    <a href="#"><i class="fas fa-sign-out-alt me-2"></i> Sign out</a>
+                </div>
+            </nav>
+            <nav class="navbar navbar-expand-lg navbar-dark bg-dark border-bottom border-primary">
+                <div class="container">
+                    <a class="navbar-brand fw-bold" href="{% url 'dashboard' %}">
+                        <i class="fas fa-gamepad text-primary me-2"></i>GAMEVAULT
+                    </a>
+                    
+                    <div class="ms-auto d-flex align-items-center">
+                        {% if user.is_authenticated %}
+                            <span class="text-light me-3 small">Welcome, {{ user.username }}</span>
+                            <a href="/admin/logout/" class="btn btn-outline-light btn-sm">Logout</a>
+                        {% else %}
+                            <a href="/admin/login/" class="btn btn-outline-primary btn-sm me-2">Login</a>
+                            <a href="#" class="btn btn-primary btn-sm">Sign Up</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </nav>
+
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="pt-3 pb-2 mb-3">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -88,10 +88,17 @@
             text-shadow: 0 0 10px rgba(0, 242, 255, 0.5);
         }
 
-        /* Main Content Container */
+        /* Main Content Container Logic */
         .main-wrapper {
             margin-left: 16.666667%; /* Offset for col-md-2 */
             width: 83.333333%;
+            min-height: 100vh;
+        }
+        
+        .main-wrapper-full {
+            margin-left: 0;
+            width: 100%;
+            min-height: 100vh;
         }
 
         /* Sassy Glass Cards */
@@ -122,6 +129,11 @@
             color: var(--neon-blue);
             text-shadow: 0 0 10px var(--neon-blue);
         }
+        
+        .text-neon-purple {
+            color: var(--neon-purple);
+            text-shadow: 0 0 10px var(--neon-purple);
+        }
 
         /* Neon Buttons */
         .btn-neon {
@@ -135,13 +147,33 @@
             padding: 10px 25px;
             transition: all 0.3s ease;
             box-shadow: 0 0 10px rgba(188, 19, 254, 0.2);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .btn-neon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(188, 19, 254, 0.4), transparent);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .btn-neon:hover::before {
+            left: 100%;
         }
 
         .btn-neon:hover {
-            background: var(--neon-purple);
+            background: rgba(188, 19, 254, 0.1);
             color: #fff;
             box-shadow: 0 0 25px var(--neon-purple);
             transform: scale(1.05);
+            text-shadow: 0 0 8px #fff;
         }
 
         /* Table Styling */
@@ -167,6 +199,17 @@
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
+        
+        /* Floating Animation */
+        .float-anim {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
 
         /* Alert Styling */
         .alert {
@@ -178,7 +221,7 @@
         }
 
         @media (max-width: 768px) {
-            .main-wrapper {
+            .main-wrapper, .main-wrapper-full {
                 margin-left: 0;
                 width: 100%;
             }
@@ -191,7 +234,8 @@
 <body>
     <div class="container-fluid p-0">
         <div class="row g-0">
-            <!-- Sidebar -->
+            <!-- Sidebar (Only show if NOT hidden) -->
+            {% if not hide_sidebar %}
             <nav class="col-md-2 d-none d-md-block sidebar shadow">
                 <div class="text-center px-3">
                     <h5><i class="fas fa-bolt text-neon"></i> GAMEVAULT</h5>
@@ -213,12 +257,13 @@
                     </a>
                 </div>
             </nav>
+            {% endif %}
 
-            <!-- Main Content -->
-            <main class="col-md-10 main-wrapper fade-in p-5">
+            <!-- Main Content (Adjust width if sidebar is hidden) -->
+            <main class="{% if hide_sidebar %}col-12 main-wrapper-full{% else %}col-md-10 main-wrapper p-5{% endif %} fade-in">
                 {% if messages %}
                     {% for message in messages %}
-                        <div class="alert alert-dismissible fade show shadow-lg mb-4" role="alert">
+                        <div class="alert alert-dismissible fade show shadow-lg mb-4 m-3" role="alert">
                             <i class="fas fa-info-circle me-2"></i> {{ message }}
                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert" aria-label="Close"></button>
                         </div>

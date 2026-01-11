@@ -8,7 +8,8 @@ def home(request):
     """
     Renders the high-energy landing page.
     """
-    return render(request, 'store/home.html')
+    # We pass 'hide_sidebar': True to render the full-screen landing experience
+    return render(request, 'store/home.html', {'hide_sidebar': True})
 
 def dashboard(request):
     """
@@ -43,6 +44,7 @@ def inventory_list(request):
 
 def customer_list(request):
     customers = Customer.objects.all()
+    # Assuming you have a template for customers, otherwise pointing to a placeholder
     return render(request, 'store/customers.html', {'customers': customers})
 
 def process_sale(request, product_id):
